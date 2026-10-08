@@ -1,0 +1,4 @@
+#!/bin/sh
+# Adaptation au .git en lecture seule dans cet environnement.
+cd "$(dirname "$0")/.." || exit 1
+exec git --git-dir=.git-local --work-tree=. "$@"
