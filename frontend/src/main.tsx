@@ -9,15 +9,25 @@ function App() {
     const timer = setTimeout(() => controller.abort(), 5000);
     async function checkHealth() {
       try {
-        const response = await fetch('/api/health', { signal: controller.signal });
+        const response = await fetch('/api/health', {
+          signal: controller.signal,
+        });
         if (!response.ok) throw new Error('Réponse HTTP incorrecte');
         const body: unknown = await response.json();
-        if (typeof body !== 'object' || body === null || !('status' in body) || body.status !== 'ok') {
+        if (
+          typeof body !== 'object' ||
+          body === null ||
+          !('status' in body) ||
+          body.status !== 'ok'
+        ) {
           throw new Error('Réponse API inattendue');
         }
         setStatus('API connectée');
       } catch {
-        if (!cancelled) setStatus('API indisponible. Vérifie que le backend est lancé, puis recharge la page.');
+        if (!cancelled)
+          setStatus(
+            'API indisponible. Vérifie que le backend est lancé, puis recharge la page.',
+          );
       } finally {
         clearTimeout(timer);
       }
@@ -35,12 +45,16 @@ function App() {
       <p>Projet personnel — en cours</p>
       <h1>PretApp</h1>
       <p>Gestion de prêts et de réservations de matériel.</p>
-      <p role="status" aria-live="polite">{status}</p>
+      <p role="status" aria-live="polite">
+        {status}
+      </p>
       <p>Première étape : relier une interface React à une API FastAPI.</p>
     </main>
   );
 }
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><App /></StrictMode>,
+  <StrictMode>
+    <App />
+  </StrictMode>,
 );

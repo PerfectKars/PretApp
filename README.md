@@ -1,12 +1,12 @@
 # PretApp
 
-Projet personnel **en cours**, commencé le 8 octobre 2026. Cible : version 1.0 autour du 8 novembre. Application de prêts de matériel pour une association ou un club étudiant, sans commanditaire ni utilisateurs réels. Démonstrations avec données fictives. Développement accompagné par un assistant IA ; compréhension et exercices suivis dans les sessions.
+Projet personnel **en cours**, commencé le 12 octobre 2026. Cible : version 1.0 autour du 11 novembre. Application de prêts de matériel pour une association ou un club étudiant, sans commanditaire ni utilisateurs réels. Démonstrations avec données fictives. Développement accompagné par un assistant IA.
 
 ## État actuel
 
-Socle préparé : FastAPI `/health`, React/TypeScript, proxy Vite, test du contrat HTTP, Ruff, ESLint, Prettier, CI et Docker Compose. Aucune fonctionnalité métier implémentée. SQLAlchemy, Psycopg et Alembic sont déclarés ; modèles et migrations seront développés ensemble en semaine 1.
+Socle en place : API FastAPI `/health` testée, interface React/TypeScript connectée via le proxy Vite, Ruff, ESLint, Prettier, CI GitHub Actions et Docker Compose. Aucune fonctionnalité métier implémentée pour l'instant. SQLAlchemy, Psycopg et Alembic sont déclarés ; modèles et migrations arrivent à l'étape suivante.
 
-**Installation et exécution non validées dans l'environnement initial** : DNS PyPI/npm inaccessible, Docker absent. La CI n'a pas été exécutée. Les versions directes sont fixées ; les dépendances transitives ne sont pas encore verrouillées. Première priorité : installer, formater, tester, générer les verrous puis passer la CI avant tout merge. Ne pas présenter ce socle comme testé de bout en bout.
+Docker Compose n'a pas encore été validé. Les dépendances transitives ne sont pas encore verrouillées.
 
 ## Lancer en local
 
@@ -68,37 +68,11 @@ Le test `/health` vérifie HTTP 200, type JSON et contrat exact. La compilation 
 
 Après première installation réussie : committer `frontend/package-lock.json`, utiliser `npm ci` dans CI/Docker, générer des verrous Python complets (ex. pip-tools), puis installer ces verrous dans CI/Docker. Les installations actuelles ne garantissent pas encore une résolution transitive identique.
 
-## Git et publication
-
-L'environnement initial monte `.git` en lecture seule. Métadonnées persistées dans `.git-local` (ignorées) ; ici, utiliser `./scripts/git-local status`, `./scripts/git-local log --oneline`, etc. Auteur initial générique pour éviter de publier une adresse personnelle ; configurer ensuite son nom et son adresse GitHub noreply choisie. Aucun historique n'est antidaté.
-
-Pour récupérer un dépôt Git standard sur une machine disposant des droits :
-
-```bash
-git clone /chemin/vers/ProtApp/.git-local PretApp
-cd PretApp
-```
-
-Authentification GitHub existante invalide. Sur sa propre machine :
-
-```bash
-gh auth login --hostname github.com --git-protocol https --web
-gh auth status
-```
-
-Ne jamais coller de token dans le dépôt ou une conversation. Vérifier l'identité et l'absence du nom `PretApp` dans ses dépôts personnels. Si le nom existe, utiliser `PretApp-portfolio` après vérification ; ne pas réutiliser ou écraser le dépôt existant. Depuis le clone standard, créer le dépôt vide **personnel** :
-
-```bash
-gh repo create PretApp --public --description "Projet personnel en cours : prêts de matériel avec FastAPI et React"
-```
-
-Ajouter ensuite `origin` avec l'URL affichée, pousser la branche `chore/bootstrap` et ouvrir une PR après validation. Le premier commit sert de base `main` ; cette base de suivi n'est pas une application exécutable. Ne merger le socle qu'après CI verte. Les issues locales de `docs/issues.md` seront publiées ensuite avec `gh issue create --title ... --body-file ...`. Brouillon de PR : `docs/pr-bootstrap.md`. Une relecture personnelle n'est pas une revue indépendante.
-
 ## Organisation
 
 - `backend/app` : API ; `backend/tests` : tests pytest.
 - `frontend/src` : interface minimale ; `compose.yaml` : environnement local.
-- [Roadmap](docs/roadmap.md), [règles proposées](docs/rules.md), [issues](docs/issues.md), [sessions et reprise](docs/sessions.md).
+- [Règles métier proposées](docs/rules.md).
 - Hors périmètre : paiements, mobile, IA, multi-associations, emails et cloud complexe.
 
 ## Sources officielles consultées le 8 octobre 2026

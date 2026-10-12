@@ -18,3 +18,9 @@ dist/
 .coverage
 htmlcov/
 .DS_Store
+
+# Suivi personnel (non publié)
+docs/issues.md
+docs/pr-bootstrap.md
+docs/roadmap.md
+scripts/git-local
