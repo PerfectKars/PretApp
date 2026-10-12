@@ -6,7 +6,7 @@ Projet personnel **en cours**, commencé le 12 octobre 2026. Cible : version 1.0
 
 Socle en place : API FastAPI `/health` testée, interface React/TypeScript connectée via le proxy Vite, Ruff, ESLint, Prettier, CI GitHub Actions et Docker Compose. Aucune fonctionnalité métier implémentée pour l'instant. SQLAlchemy, Psycopg et Alembic sont déclarés ; modèles et migrations arrivent à l'étape suivante.
 
-Docker Compose n'a pas encore été validé. Les dépendances transitives ne sont pas encore verrouillées.
+Docker Compose n'a pas encore été validé. Toutes les dépendances sont verrouillées (`package-lock.json`, `requirements*.txt`).
 
 ## Lancer en local
 
@@ -26,7 +26,7 @@ Dans un autre terminal, depuis la racine :
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run format
 npm run dev
 ```
@@ -66,7 +66,19 @@ npm run build
 
 Le test `/health` vérifie HTTP 200, type JSON et contrat exact. La compilation TypeScript et le build vérifient le frontend ; le parcours visuel et les erreurs restent à vérifier manuellement. La CI reprend ces commandes.
 
-Après première installation réussie : committer `frontend/package-lock.json`, utiliser `npm ci` dans CI/Docker, générer des verrous Python complets (ex. pip-tools), puis installer ces verrous dans CI/Docker. Les installations actuelles ne garantissent pas encore une résolution transitive identique.
+## Dépendances
+
+Les versions exactes sont verrouillées, dépendances transitives comprises, pour que chaque installation (poste, CI, Docker) soit identique.
+
+- Python : les dépendances directes se modifient dans `backend/requirements.in` (production) et `backend/requirements-dev.in` (outils de développement). Les fichiers `.txt` sont générés avec pip-tools, ne pas les éditer à la main :
+
+  ```bash
+  cd backend
+  ../.venv/bin/pip-compile --strip-extras requirements.in
+  ../.venv/bin/pip-compile --strip-extras requirements-dev.in
+  ```
+
+- JavaScript : `npm install <paquet>` met à jour `package-lock.json` ; `npm ci` installe exactement ce qu'il contient.
 
 ## Organisation
 
