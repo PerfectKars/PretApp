@@ -1,6 +1,6 @@
 # Modèle de données
 
-Schéma validé avant tout code (P02). Les règles métier qui l'expliquent sont dans [`rules.md`](rules.md).
+Schéma validé avant l'écriture du code. Les règles métier qui l'expliquent sont dans [`rules.md`](rules.md).
 
 ## Schéma
 
@@ -52,5 +52,5 @@ Posées dans la base, pas seulement dans le code : la base est la dernière lign
 - **Dates en UTC** (`timestamptz`), affichage en `Europe/Paris`. Paris alterne UTC+1 et UTC+2 : un décalage fixe fausserait les dates d'hiver.
 - **Retard calculé, jamais stocké** : réservation `collected` dont `fin` est dépassée. Une valeur stockée serait fausse dès que l'heure passe.
 - **Désactiver plutôt que supprimer** : `equipement.reservable = false` conserve l'historique des réservations.
-- **Mot de passe** : seul un hash (Argon2id prévu en S3) est stocké.
-- **Chevauchements** : aucune contrainte dans cette première version ; la contrainte d'exclusion PostgreSQL (`approved` et `collected`) est prévue en S2.
+- **Mot de passe** : seul un hash (Argon2id prévu) est stocké.
+- **Chevauchements** : aucune contrainte dans cette première version ; la contrainte d'exclusion PostgreSQL (`approved` et `collected`) est prévue dans une étape ultérieure.

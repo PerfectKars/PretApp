@@ -4,7 +4,7 @@ Projet personnel **en cours**, commencé le 12 octobre 2026. Cible : version 1.0
 
 ## État actuel
 
-Socle en place : API FastAPI `/health` testée, interface React/TypeScript connectée via le proxy Vite, Ruff, ESLint, Prettier, CI GitHub Actions et Docker Compose. Aucune fonctionnalité métier implémentée pour l'instant. SQLAlchemy, Psycopg et Alembic sont déclarés ; modèles et migrations arrivent à l'étape suivante.
+Socle en place : API FastAPI `/health` testée, interface React/TypeScript connectée via le proxy Vite, Ruff, ESLint, Prettier, CI GitHub Actions et Docker Compose. Aucune fonctionnalité métier implémentée pour l'instant. SQLAlchemy, Psycopg et Alembic sont déclarés ; les modèles et les migrations sont à venir. Le schéma cible est décrit dans `docs/data-model.md`.
 
 Docker Compose n'a pas encore été validé. Toutes les dépendances sont verrouillées (`package-lock.json`, `requirements*.txt`).
 
@@ -33,7 +33,7 @@ npm run dev
 
 Ouvrir http://localhost:5173 : « API connectée » doit apparaître. API : http://localhost:8000/health, documentation : http://localhost:8000/docs. Vite transmet `/api/health` à `/health` : même origine pour le navigateur, sans configuration CORS inutile. Le frontend affiche aussi les erreurs HTTP, réponses inattendues et une indisponibilité après cinq secondes.
 
-PostgreSQL n'est pas utilisé par `/health` : cette route mesure uniquement la vie de l'API. Aucun schéma ni jeu de données aujourd'hui. `.env` prépare la connexion future ; le backend actuel n'en a pas besoin.
+PostgreSQL n'est pas utilisé par `/health` : cette route mesure uniquement la vie de l'API. Aucun schéma ni jeu de données n'est encore créé. `.env` prépare la connexion future ; le backend actuel n'en a pas besoin.
 
 ## Docker Compose (développement)
 
