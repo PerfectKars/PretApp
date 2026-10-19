@@ -3,7 +3,10 @@ from typing import Literal
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from app.catalogue import router as catalogue_router
+
 app = FastAPI(title="PretApp", version="0.0.1")
+app.include_router(catalogue_router)
 
 
 class HealthResponse(BaseModel):

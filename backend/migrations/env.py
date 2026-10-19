@@ -10,7 +10,9 @@ from app.db import DATABASE_URL, Base
 # access to the values within the .ini file in use.
 config = context.config
 # L'URL vient de l'environnement, jamais d'un fichier versionné.
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+# Les tests peuvent fournir la leur (base séparée).
+if not config.get_main_option("sqlalchemy.url"):
+    config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

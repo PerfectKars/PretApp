@@ -36,7 +36,11 @@ class Utilisateur(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True)
     password_hash: Mapped[str] = mapped_column(String(255))
 
-    reservations: Mapped[list[Reservation]] = relationship(back_populates="utilisateur")
+    # passive_deletes : l'ORM laisse la FK RESTRICT refuser la suppression
+    # au lieu de vider reservation.utilisateur_id.
+    reservations: Mapped[list[Reservation]] = relationship(
+        back_populates="utilisateur", passive_deletes="all"
+    )
 
 
 class Equipement(Base):
@@ -47,7 +51,11 @@ class Equipement(Base):
     description: Mapped[str | None] = mapped_column(Text)
     reservable: Mapped[bool] = mapped_column(default=True)
 
-    reservations: Mapped[list[Reservation]] = relationship(back_populates="equipement")
+    # passive_deletes : l'ORM laisse la FK RESTRICT refuser la suppression
+    # au lieu de vider reservation.equipement_id.
+    reservations: Mapped[list[Reservation]] = relationship(
+        back_populates="equipement", passive_deletes="all"
+    )
 
 
 class Reservation(Base):

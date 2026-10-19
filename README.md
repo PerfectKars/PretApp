@@ -4,9 +4,7 @@ Projet personnel **en cours**, commencé le 12 octobre 2026. Cible : version 1.0
 
 ## État actuel
 
-Socle en place : API FastAPI `/health` testée, interface React/TypeScript connectée via le proxy Vite, Ruff, ESLint, Prettier, CI GitHub Actions et Docker Compose. Aucune fonctionnalité métier implémentée pour l'instant. SQLAlchemy, Psycopg et Alembic sont déclarés ; les modèles et les migrations sont à venir. Le schéma cible est décrit dans `docs/data-model.md`.
-
-Docker Compose n'a pas encore été validé. Toutes les dépendances sont verrouillées (`package-lock.json`, `requirements*.txt`).
+Socle en place : API FastAPI `/health` testée, interface React/TypeScript connectée via le proxy Vite, Ruff, ESLint, Prettier, CI GitHub Actions et Docker Compose. Schéma PostgreSQL créé par une migration Alembic (modèles SQLAlchemy, contraintes décrites dans `docs/data-model.md`). Catalogue en lecture seule : `GET /equipements` et `GET /equipements/{id}`, alimenté par des données fictives. Réservations, comptes et interface métier à venir. Toutes les dépendances sont verrouillées (`package-lock.json`, `requirements*.txt`).
 
 ## Lancer en local
 
@@ -33,7 +31,15 @@ npm run dev
 
 Ouvrir http://localhost:5173 : « API connectée » doit apparaître. API : http://localhost:8000/health, documentation : http://localhost:8000/docs. Vite transmet `/api/health` à `/health` : même origine pour le navigateur, sans configuration CORS inutile. Le frontend affiche aussi les erreurs HTTP, réponses inattendues et une indisponibilité après cinq secondes.
 
-PostgreSQL n'est pas utilisé par `/health` : cette route mesure uniquement la vie de l'API. Aucun schéma ni jeu de données n'est encore créé. `.env` prépare la connexion future ; le backend actuel n'en a pas besoin.
+Le catalogue a besoin de PostgreSQL ; le plus simple est de lancer uniquement la base avec Docker, puis de créer le schéma et les données fictives, depuis `backend` :
+
+```bash
+docker compose up -d db
+../.venv/bin/alembic upgrade head
+../.venv/bin/python -m app.seed
+```
+
+`alembic upgrade head` applique toutes les migrations ; `alembic downgrade -1` annule la dernière. Le script de données fictives peut être relancé sans créer de doublon. Le backend lit `DATABASE_URL` dans l'environnement ; sans variable, il utilise l'adresse locale de `.env.example`. `/health` ne dépend pas de PostgreSQL : cette route mesure uniquement la vie de l'API.
 
 ## Docker Compose (développement)
 
@@ -43,6 +49,13 @@ Avec Docker Engine et le plugin Compose installés :
 cp .env.example .env
 docker compose config --quiet
 docker compose up --build
+```
+
+Dans un autre terminal, au premier lancement :
+
+```bash
+docker compose exec backend alembic upgrade head
+docker compose exec backend python -m app.seed
 ```
 
 Mêmes adresses que ci-dessus. Les trois services sont backend, frontend et PostgreSQL 17 ; la base attendue est saine avant démarrage du backend. Frontend servi par Vite pour le développement, pas un déploiement de production. Identifiants de démonstration uniquement. Arrêt : `docker compose down` ; les données restent dans le volume. Ne pas ajouter `-v` si l'on veut conserver les données.
@@ -64,7 +77,7 @@ npm run format:check
 npm run build
 ```
 
-Le test `/health` vérifie HTTP 200, type JSON et contrat exact. La compilation TypeScript et le build vérifient le frontend ; le parcours visuel et les erreurs restent à vérifier manuellement. La CI reprend ces commandes.
+Les tests ont besoin de PostgreSQL (`docker compose up -d db`). Ils utilisent une base séparée, `pretapp_test`, créée si besoin et remise à zéro par les migrations à chaque lancement ; chaque test est annulé à la fin (transaction). `TEST_DATABASE_URL` permet de choisir une autre base. Ils vérifient `/health`, le catalogue, les contraintes de la base et l'accord entre modèles et migrations. La compilation TypeScript et le build vérifient le frontend ; le parcours visuel et les erreurs restent à vérifier manuellement. La CI reprend ces commandes.
 
 ## Dépendances
 

@@ -7,6 +7,23 @@ permissions:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      # Même version que compose.yaml ; identifiants fictifs propres à la CI.
+      db:
+        image: postgres:17-bookworm
+        env:
+          POSTGRES_DB: pretapp_test
+          POSTGRES_USER: pretapp_ci
+          POSTGRES_PASSWORD: ci_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pretapp_ci -d pretapp_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://pretapp_ci:ci_only@localhost:5432/pretapp_test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
