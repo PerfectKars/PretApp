@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.models import Equipement
+from app.models import Equipement, Utilisateur
 from app.seed import inserer_donnees_fictives
 
 
@@ -72,4 +72,8 @@ def test_donnees_fictives_sans_doublon(session: Session) -> None:
 
     assert premier > 0
     assert second == 0
-    assert session.scalar(select(func.count()).select_from(Equipement)) == premier
+    lignes = sum(
+        session.scalar(select(func.count()).select_from(modele))
+        for modele in (Equipement, Utilisateur)
+    )
+    assert lignes == premier
