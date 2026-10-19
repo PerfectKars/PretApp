@@ -4,7 +4,18 @@ Projet personnel **en cours**, commencé le 12 octobre 2026. Cible : version 1.0
 
 ## État actuel
 
-Socle en place : API FastAPI `/health` testée, interface React/TypeScript connectée via le proxy Vite, Ruff, ESLint, Prettier, CI GitHub Actions et Docker Compose. Schéma PostgreSQL créé par une migration Alembic (modèles SQLAlchemy, contraintes décrites dans `docs/data-model.md`). Catalogue en lecture seule : `GET /equipements` et `GET /equipements/{id}`, alimenté par des données fictives. Réservations, comptes et interface métier à venir. Toutes les dépendances sont verrouillées (`package-lock.json`, `requirements*.txt`).
+Socle en place : API FastAPI `/health` testée, interface React/TypeScript connectée via le proxy Vite, Ruff, ESLint, Prettier, CI GitHub Actions et Docker Compose. Schéma PostgreSQL créé par une migration Alembic (modèles SQLAlchemy, contraintes décrites dans `docs/data-model.md`). Catalogue en lecture seule : `GET /equipements` et `GET /equipements/{id}`, alimenté par des données fictives. Demande de réservation : `POST /reservations` enregistre une demande `pending` après validation des dates (fuseau obligatoire, début non passé, fin après le début, 30 jours au plus) et de l'équipement. Disponibilité, décisions, comptes et interface métier à venir.
+
+### Accès provisoire
+
+Les comptes n'existent pas encore. En attendant, l'utilisateur qui fait une demande est désigné par l'en-tête `X-Utilisateur-Id`, accepté **uniquement** si `PRETAPP_ACCES_PROVISOIRE=1`. Par défaut l'accès est fermé et l'API répond 401. À n'activer qu'en local, avec les données fictives :
+
+```bash
+cd backend
+PRETAPP_ACCES_PROVISOIRE=1 ../.venv/bin/python -m uvicorn app.main:app --reload
+```
+
+Toute l'identification passe par la dépendance `utilisateur_courant` (`backend/app/identite.py`), qui sera remplacée par l'authentification. Toutes les dépendances sont verrouillées (`package-lock.json`, `requirements*.txt`).
 
 ## Lancer en local
 

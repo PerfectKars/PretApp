@@ -4,9 +4,11 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from app.catalogue import router as catalogue_router
+from app.reservations import router as reservations_router
 
 app = FastAPI(title="PretApp", version="0.0.1")
 app.include_router(catalogue_router)
+app.include_router(reservations_router)
 
 
 class HealthResponse(BaseModel):

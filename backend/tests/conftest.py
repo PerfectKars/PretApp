@@ -1,5 +1,6 @@
 import os
 from collections.abc import Iterator
+from datetime import UTC, datetime
 
 import pytest
 from alembic import command
@@ -9,6 +10,7 @@ from sqlalchemy import Engine, create_engine, make_url, text
 from sqlalchemy.orm import Session
 
 from app.db import DATABASE_URL, get_session
+from app.horloge import maintenant
 from app.main import app
 
 # Base dédiée aux tests : la base de développement n'est jamais touchée.
@@ -65,8 +67,18 @@ def session(engine: Engine) -> Iterator[Session]:
         transaction.rollback()
 
 
+# Horloge contrôlée : les tests ne dépendent jamais de l'heure réelle.
+HEURE_SERVEUR = datetime(2026, 11, 1, 12, 0, tzinfo=UTC)
+
+
+@pytest.fixture
+def heure_serveur() -> datetime:
+    return HEURE_SERVEUR
+
+
 @pytest.fixture
 def client(session: Session) -> Iterator[TestClient]:
     app.dependency_overrides[get_session] = lambda: session
+    app.dependency_overrides[maintenant] = lambda: HEURE_SERVEUR
     yield TestClient(app)
     app.dependency_overrides.clear()
